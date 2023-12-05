@@ -16,7 +16,7 @@ loguru = "^0.6.0"
 [tool.poetry.dev-dependencies]
 pylint = "^2.12.2"
 pytest = "^7.0.1"
-mypy = "^0.931"
+mypy = "^1.7"
 black = "^22.1.0"
 
 [build-system]
