@@ -17,7 +17,7 @@ loguru = "^0.7.2"
 pylint = "^2.12.2"
 pytest = "^7.0.1"
 mypy = "^1.7"
-black = "^22.1.0"
+black = "^23.11.0"
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]
