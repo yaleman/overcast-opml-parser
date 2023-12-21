@@ -12,7 +12,7 @@ from typing import List, Optional
 
 
 from loguru import logger
-from requests_xml import XML
+from requests_xml import XML  # type: ignore
 import click
 from pydantic import BaseModel, Field, ValidationError
 
@@ -65,7 +65,7 @@ class OPMLFile(BaseModel):
 def load_file(filename: Path, check_unhandled_attr: bool = False) -> OPMLFile:
     """loads the file and parses it with untangle"""
     if not filename.exists():
-        return OPMLFile()
+        return OPMLFile(playlists=[], feeds=[])
 
     with filename.expanduser().resolve().open(encoding="utf8") as file_handle:
         filecontents = file_handle.readlines()
@@ -82,7 +82,7 @@ def load_file(filename: Path, check_unhandled_attr: bool = False) -> OPMLFile:
 
     feeds = xmldata.xpath("//outline[@text='feeds']", first=True)
 
-    retval = OPMLFile()
+    retval = OPMLFile(playlists=[], feeds=[])
 
     unhandled_feed_attr: List[str] = []
     ignore_feed_attr = ["type", "text"]
@@ -168,7 +168,7 @@ def load_file(filename: Path, check_unhandled_attr: bool = False) -> OPMLFile:
 
 @click.command()
 @click.argument("filename", type=click.File())
-def cli(filename: click.File = None) -> None:
+def cli(filename: Optional[click.File] = None) -> None:
     """Overcast.fm Extended OPML Parser"""
 
     if filename is None:
