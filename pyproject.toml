@@ -19,7 +19,7 @@ loguru = "^0.7.2"
 pylint = "^3.0.3"
 pytest = "^8.0.0"
 mypy = "^1.8"
-black = "^24.1.1"
+black = "^24.2.0"
 
 [tool.poetry.group.dev.dependencies]
 ruff = "^0.2.1"
