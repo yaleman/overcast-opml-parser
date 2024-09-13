@@ -11,7 +11,7 @@ license = "MIT"
 python = "^3.9"
 untangle = "^1.1.1"
 click = "^8.0.3"
-pydantic = "^2.9.0"
+pydantic = "^2.9.1"
 requests-xml = "^0.2.3"
 loguru = "^0.7.2"
 
