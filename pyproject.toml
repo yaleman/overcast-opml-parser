@@ -13,7 +13,7 @@ untangle = "^1.1.1"
 click = "^8.0.3"
 pydantic = "^2.10.3"
 requests-xml = "^0.2.3"
-loguru = "^0.7.2"
+loguru = "^0.7.3"
 
 [tool.poetry.dev-dependencies]
 pylint = "^3.3.1"
