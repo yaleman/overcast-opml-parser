@@ -22,7 +22,7 @@ mypy = "^1.18"
 black = "^25.9.0"
 
 [tool.poetry.group.dev.dependencies]
-ruff = "^0.13.1"
+ruff = "^0.13.2"
 
 [build-system]
 requires = [
