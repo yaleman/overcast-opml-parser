@@ -1,1 +1,1 @@
-""" Parser/munger for Overcast OPML files """
+"""Parser/munger for Overcast OPML files"""

@@ -1,18 +1,18 @@
 #!/usr/bin/env python3
-""" parses the "All data" OPML file from
-    https://overcast.fm/account and shows some simple stats
-    """
+"""parses the "All data" OPML file from
+https://overcast.fm/account and shows some simple stats
+"""
 
 # import os.path
 import json
 from datetime import datetime
 from pathlib import Path
 import sys
-from typing import List, Optional
+from typing import Optional, cast
 
 
 from loguru import logger
-from requests_xml import XML  # type: ignore
+from requests_xml import Element, XML
 import click
 from pydantic import BaseModel, Field, ValidationError
 
@@ -22,10 +22,12 @@ class Playlist(BaseModel):
 
     title: str
     smart: bool
-    sorting: str  # probably should be an enum, since I'm sure there's only a few options
-    includePodcastIds: Optional[List[int]] = Field(None)
-    includeEpisodeIds: Optional[List[int]] = Field(None)
-    sortedEpisodeIds: Optional[List[int]] = Field(None)
+    sorting: (
+        str  # probably should be an enum, since I'm sure there's only a few options
+    )
+    includePodcastIds: Optional[list[int]] = Field(None)
+    includeEpisodeIds: Optional[list[int]] = Field(None)
+    sortedEpisodeIds: Optional[list[int]] = Field(None)
 
 
 class Episode(BaseModel):
@@ -52,14 +54,24 @@ class Feed(BaseModel):
     xmlUrl: Optional[str] = Field(None)
     htmlUrl: Optional[str] = Field(None)
     subscribed: bool = Field(False)
-    episodes: List[Episode] = Field([])
+    episodes: list[Episode] = Field([])
 
 
 class OPMLFile(BaseModel):
     """type def for the data returned from load_file"""
 
-    playlists: List[Playlist] = Field([])
-    feeds: List[Feed] = Field([])
+    playlists: list[Playlist] = Field([])
+    feeds: list[Feed] = Field([])
+
+
+def xpath_first_element(root: XML | Element, selector: str) -> Element | None:
+    """Return the first XML element for selectors known to target elements."""
+    return cast(Element | None, root.xpath(selector, first=True))
+
+
+def xpath_elements(root: XML | Element, selector: str) -> list[Element]:
+    """Return XML elements for selectors known to target elements."""
+    return cast(list[Element], root.xpath(selector))
 
 
 def load_file(filename: Path, check_unhandled_attr: bool = False) -> OPMLFile:
@@ -71,7 +83,7 @@ def load_file(filename: Path, check_unhandled_attr: bool = False) -> OPMLFile:
         filecontents = file_handle.readlines()
 
     xmldata = XML(xml="".join(filecontents[1:]))
-    playlists = xmldata.xpath("//outline[@text='playlists']", first=True)
+    playlists = xpath_first_element(xmldata, "//outline[@text='playlists']")
 
     if playlists is None:
         logger.error(
@@ -80,25 +92,31 @@ def load_file(filename: Path, check_unhandled_attr: bool = False) -> OPMLFile:
         )
         sys.exit(1)
 
-    feeds = xmldata.xpath("//outline[@text='feeds']", first=True)
+    feeds = xpath_first_element(xmldata, "//outline[@text='feeds']")
+    if feeds is None:
+        logger.error(
+            "Couldn't find feeds in {} (looking for //outline[@text='feeds'])",
+            filename,
+        )
+        sys.exit(1)
 
     retval = OPMLFile(playlists=[], feeds=[])
 
-    unhandled_feed_attr: List[str] = []
+    unhandled_feed_attr: list[str] = []
     ignore_feed_attr = ["type", "text"]
 
-    unhandled_playlist_attr: List[str] = []
+    unhandled_playlist_attr: list[str] = []
     ignore_playlist_attr = ["text", "type"]
 
-    unhandled_episode_attr: List[str] = []
+    unhandled_episode_attr: list[str] = []
     ignore_episode_attr = ["text", "type"]
 
-    playlists_xpath = playlists.xpath("//outline[@type='podcast-playlist']")
-    if playlists_xpath is None:
+    playlist_elements = xpath_elements(playlists, "//outline[@type='podcast-playlist']")
+    if not playlist_elements:
         logger.error("Couldn't find playlists in {}", filename)
         sys.exit(1)
 
-    for playlist in playlists_xpath:
+    for playlist in playlist_elements:
         for key in ["includePodcastIds", "includeEpisodeIds", "sortedEpisodeIds"]:
             if key in playlist.attrs:
                 playlist.attrs[key] = [int(el) for el in playlist.attrs[key].split(",")]
@@ -113,7 +131,7 @@ def load_file(filename: Path, check_unhandled_attr: bool = False) -> OPMLFile:
                     unhandled_playlist_attr.append(attr)
         retval.playlists.append(playlist_object)
 
-    for feed in feeds.xpath("//outline[@type='rss']"):
+    for feed in xpath_elements(feeds, "//outline[@type='rss']"):
         try:
             feed_object = Feed(**feed.attrs)
             if check_unhandled_attr:
@@ -128,7 +146,7 @@ def load_file(filename: Path, check_unhandled_attr: bool = False) -> OPMLFile:
             logger.error(error_message)
             logger.error(json.dumps(feed, default=str))
 
-        episodes = feed.xpath("//outline[@type='podcast-episode']")
+        episodes = xpath_elements(feed, "//outline[@type='podcast-episode']")
         for episode in episodes:
             try:
                 episode_object = Episode(**episode.attrs)

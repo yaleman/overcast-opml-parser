@@ -16,8 +16,13 @@ Usage instructions go here.
 
 ## Development
 
-To contribute to this library, first checkout the code. Then create a new virtual environment:
+To contribute to this library, first checkout the code. Then install the development environment with `uv`:
 
     cd overcast-opml-parser
-    poetry install
-    source venv/bin/activate
+    uv sync --dev
+
+Run the checks locally with:
+
+    uv run ruff check overcast_opml_parser tests
+    uv run ty check overcast_opml_parser tests
+    uv run pytest
