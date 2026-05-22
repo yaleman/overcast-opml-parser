@@ -9,7 +9,7 @@ authors = [
     { name = "James Hogkinson", email = "james@terminaloutcomes.com" },
 ]
 dependencies = [
-    "click>=8.3.3",
+    "click>=8.4.1",
     "loguru>=0.7.3",
     "pydantic>=2.13.4",
     "requests-xml>=0.2.3",
