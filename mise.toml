@@ -1,0 +1,15 @@
+[tools]
+python = "3.14"
+uv = "latest"
+
+[tasks.check]
+depends = ["ty", "ruff", "pytest"]
+
+[tasks.ty]
+run = "uv run ty check"
+
+[tasks.ruff]
+run = "uv run ruff check"
+
+[tasks.pytest]
+run = "uv run pytest"

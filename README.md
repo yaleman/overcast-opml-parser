@@ -8,7 +8,9 @@ A parser for Overcast's extended format
 
 Install this library using `pip`:
 
-    $ python -m pip install overcast-opml-parser
+```shell
+python -m pip install overcast-opml-parser
+```
 
 ## Usage
 
@@ -18,11 +20,17 @@ Usage instructions go here.
 
 To contribute to this library, first checkout the code. Then install the development environment with `uv`:
 
-    cd overcast-opml-parser
-    uv sync --dev
+```shell
+cd overcast-opml-parser
+uv sync
+```
 
 Run the checks locally with:
 
-    uv run ruff check overcast_opml_parser tests
-    uv run ty check overcast_opml_parser tests
-    uv run pytest
+```shell
+uv run ruff check
+uv run ty check
+uv run pytest
+```
+
+or if you have `mise` installed, `mise install && mise check`.
