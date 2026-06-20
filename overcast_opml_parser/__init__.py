@@ -69,29 +69,29 @@ def xpath_elements(root: XML | Element, selector: str) -> list[Element]:
     return cast(list[Element], root.xpath(selector))
 
 
-def load_file(filename: Path, check_unhandled_attr: bool = False) -> OPMLFile:
+def load_file(filename: Path, check_unhandled_attr: bool = False) -> XML:
     """loads the file and parses it with untangle"""
-    if not filename.exists():
-        return OPMLFile(playlists=[], feeds=[])
 
     with filename.expanduser().resolve().open(encoding="utf8") as file_handle:
         filecontents = file_handle.readlines()
 
     xmldata = XML(xml="".join(filecontents[1:]))
+    return xmldata
+
+
+def parse(xmldata: XML, check_unhandled_attr: bool) -> OPMLFile:
     playlists = xpath_first_element(xmldata, "//outline[@text='playlists']")
 
     if playlists is None:
         logger.error(
-            "Couldn't find playlists in {} (looking for //outline[@text='playlists'])",
-            filename,
+            "Couldn't find playlists (looking for //outline[@text='playlists'])",
         )
         sys.exit(1)
 
     feeds = xpath_first_element(xmldata, "//outline[@text='feeds']")
     if feeds is None:
         logger.error(
-            "Couldn't find feeds in {} (looking for //outline[@text='feeds'])",
-            filename,
+            "Couldn't find feeds (looking for //outline[@text='feeds'])",
         )
         sys.exit(1)
 
@@ -108,7 +108,7 @@ def load_file(filename: Path, check_unhandled_attr: bool = False) -> OPMLFile:
 
     playlist_elements = xpath_elements(playlists, "//outline[@type='podcast-playlist']")
     if not playlist_elements:
-        logger.error("Couldn't find playlists in {}", filename)
+        logger.error("Couldn't find playlists")
         sys.exit(1)
 
     for playlist in playlist_elements:

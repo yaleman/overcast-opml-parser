@@ -13,3 +13,6 @@ run = "uv run ruff check"
 
 [tasks.pytest]
 run = "uv run pytest"
+
+[tasks.coverage]
+run = ["uv run coverage run -m pytest", "uv run coverage html"]

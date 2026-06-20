@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<opml version="1.0">
+  <head>
+    <title>Overcast Podcast Subscriptions</title>
+  </head>
+  <body>
+    <outline text="playlists">
+      <outline type="podcast-playlist" title="Mains" smart="1" sorting="chronological" includePodcastIds="371758" includeEpisodeIds="399173026820848"/>
+    </outline>
+  </body>
+</opml>
