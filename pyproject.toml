@@ -23,7 +23,7 @@ build-backend = "hatchling.build"
 
 [dependency-groups]
 dev = [
-    "coverage>=7.15.0", #toml line breaking
+    "coverage>=7.15.2", #toml line breaking
     "pytest>=9.0.3",
     "ruff>=0.15.22",
     "ty>=0.0.60",
