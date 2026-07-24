@@ -25,6 +25,6 @@ build-backend = "hatchling.build"
 dev = [
     "coverage>=7.15.2", #toml line breaking
     "pytest>=9.0.3",
-    "ruff>=0.15.22",
+    "ruff>=0.16.0",
     "ty>=0.0.60",
 ]
