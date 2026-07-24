@@ -26,5 +26,5 @@ dev = [
     "coverage>=7.15.2", #toml line breaking
     "pytest>=9.0.3",
     "ruff>=0.15.22",
-    "ty>=0.0.60",
+    "ty>=0.0.63",
 ]
