@@ -1,15 +1,14 @@
 """Parser/munger for Overcast OPML files"""
 
 import json
+import sys
 from datetime import datetime
 from pathlib import Path
-import sys
-from typing import Optional, cast
-
+from typing import cast
 
 from loguru import logger
-from requests_xml import Element, XML
 from pydantic import BaseModel, Field, ValidationError
+from requests_xml import XML, Element
 
 
 class Playlist(BaseModel):
@@ -20,9 +19,9 @@ class Playlist(BaseModel):
     sorting: (
         str  # probably should be an enum, since I'm sure there's only a few options
     )
-    includePodcastIds: Optional[list[int]] = Field(None)
-    includeEpisodeIds: Optional[list[int]] = Field(None)
-    sortedEpisodeIds: Optional[list[int]] = Field(None)
+    includePodcastIds: list[int] | None = Field(None)
+    includeEpisodeIds: list[int] | None = Field(None)
+    sortedEpisodeIds: list[int] | None = Field(None)
 
 
 class Episode(BaseModel):
@@ -38,7 +37,7 @@ class Episode(BaseModel):
     userUpdatedDate: datetime
     userDeleted: bool = False
     played: bool = False
-    userRecommendedDate: Optional[datetime] = Field(None)
+    userRecommendedDate: datetime | None = Field(None)
 
 
 class Feed(BaseModel):
@@ -46,8 +45,8 @@ class Feed(BaseModel):
 
     overcastId: int
     title: str
-    xmlUrl: Optional[str] = Field(None)
-    htmlUrl: Optional[str] = Field(None)
+    xmlUrl: str | None = Field(None)
+    htmlUrl: str | None = Field(None)
     subscribed: bool = Field(False)
     episodes: list[Episode] = Field([])
 

@@ -6,8 +6,10 @@ https://overcast.fm/account and shows some simple stats
 # import os.path
 
 from pathlib import Path
-from overcast_opml_parser import load_file, parse
+
 import click
+
+from overcast_opml_parser import load_file, parse
 
 
 @click.command()
