@@ -1,5 +1,7 @@
-import pytest
 from pathlib import Path
+
+import pytest
+
 from overcast_opml_parser import load_file, parse
 
 
